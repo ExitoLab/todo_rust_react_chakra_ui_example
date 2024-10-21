@@ -1,11 +1,20 @@
 [package]
-name = "backend"
+name = "todo_rust_react_chakra_ui_example"
 version = "0.1.0"
 edition = "2021"
 
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [dependencies]
-rocket = "0.5.0-rc.1"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-mongodb = "2.2.0"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1.40.0", features = ["full"] }    # Tokio runtime for async
+warp = "0.3.7"                                      # Warp web framework
+mongodb = { version = "2.8.1", features = ["tokio-runtime"] }  # MongoDB driver for async with tokio
+serde = { version = "1.0.210", features = ["derive"] } # Serde for serialization/deserialization
+serde_json = "1.0.129"                                # Serde JSON support
+futures = "0.3.31"                                   # Futures for async operations
+futures-util = "0.3"
+
+# Define the binary target
+[[bin]]
+name = "todo_rust_react_chakra_ui_example"
+path = "src/main.rs"
