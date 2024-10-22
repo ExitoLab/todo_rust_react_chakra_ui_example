@@ -95,28 +95,36 @@ async fn main() {
 
     // Health check route
     let health_route = warp::path("health")
-        .and(warp::get())  // Handle GET request for health check
-        .and_then(health_check);  // Call health check handler
+        .and(warp::get())
+        .and_then(health_check);
 
     // Add new Todo route
     let add_route = warp::path("add")
         .and(warp::post())
-        .and(warp::body::json())  // Accept JSON request body
-        .and(db_filter.clone())   // Inject db into handler
-        .and_then(add);           // Call add function
+        .and(warp::body::json())
+        .and(db_filter.clone())
+        .and_then(add);
 
     // List all Todos route
     let list_route = warp::path("list")
-        .and(warp::get())         // Handle GET request
-        .and(db_filter.clone())   // Inject db into handler
-        .and_then(list);          // Call list function
+        .and(warp::get())
+        .and(db_filter.clone())
+        .and_then(list);
 
     // Combine all routes and set up error handling
     let routes = health_route
         .or(add_route)
         .or(list_route)
-        .recover(handle_rejection);  // Combine routes and handle errors
+        .recover(handle_rejection);
 
-    // Start the Warp server
-    warp::serve(routes).run(([0, 0, 0, 0], 8000)).await;
+    // Set up CORS
+    let cors = warp::cors()
+        .allow_any_origin() // Allow requests from any origin
+        .allow_methods(vec!["GET", "POST"]) // Allow GET and POST methods
+        .allow_headers(vec!["content-type"]); // Allow the Content-Type header
+
+    // Start the Warp server with CORS enabled
+    warp::serve(routes.with(cors))
+        .run(([0, 0, 0, 0], 8000))
+        .await;
 }
